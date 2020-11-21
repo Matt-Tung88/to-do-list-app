@@ -16,9 +16,9 @@ app.use(cors());
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 //   });
 
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+// app.get("/", function (req, res) {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
 // const ObjectId = require("mongoose").Types.ObjectId;
 
@@ -116,14 +116,14 @@ app.get("/todo", async (req, res) => {
   res.json(todos);
 });
 
-
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
   console.log(`Example app listening on port ${port}!`);
 });
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../build")));
+  //   app.use(express.static(path.join(__dirname, "../build")));
+  app.use(express.static("client/build"));
 }
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
