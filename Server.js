@@ -90,14 +90,7 @@ app.post("/todo", async (req, res) => {
 });
 
 const db = mongoose.connection;
-// mongoose.connect(process.env.MONGODB_URI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-
-const url = `mongodb+srv://mytung:#Yoshi88@todo-list.wkk3t.mongodb.net/<dbname>?retryWrites=true&w=majority
-`;
-mongoose.connect(url,  {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
