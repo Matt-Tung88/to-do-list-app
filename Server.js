@@ -90,7 +90,7 @@ app.post("/todo", async (req, res) => {
 });
 
 const db = mongoose.connection;
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/todo", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -118,7 +118,7 @@ app.get("/todo", async (req, res) => {
 
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
-  console.log(`Example app listening on port ${port}!`);
+  console.log(`MongoDB running on ${port}!`);
 });
 
 if (process.env.NODE_ENV === "production") {
@@ -126,4 +126,4 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Your app is running on https://to-do-list-app-mt.herokuapp.com/ on port: ${port}!`));
