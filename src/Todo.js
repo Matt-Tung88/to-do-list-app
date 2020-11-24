@@ -2,14 +2,14 @@ import React, { useState, useContext, useEffect } from "react";
 import { CredentialsContext } from "./App";
 import { v4 as uuidv4 } from "uuid";
 
-
+//creating the actual todo list and sending it to the server and to mongodb
 const Todo = () => {
   const [todos, setTodos] = useState([]);
   const [todoText, setTodoText] = useState("");
   const [credentials] = useContext(CredentialsContext);
   const [filter, setFilter] = useState("uncompleted");
   
-
+//send data to the server that will the be sent to mongodb
   const persist = (newTodos) => {
     fetch(`https://to-do-list-app-mt.herokuapp.com/todos`, {
       method: "POST",
@@ -21,6 +21,7 @@ const Todo = () => {
     }).then(() => {});
   };
 
+//everytime something changes, this will get the information from the server/mongodb
   useEffect(() => {
     fetch(`https://to-do-list-app-mt.herokuapp.com/todos`, {
       method: "GET",
@@ -33,6 +34,7 @@ const Todo = () => {
       .then((todos) => setTodos(todos));
   }, []);
 
+//function that adds more todo items
   const addTodo = (e) => {
     e.preventDefault();
     if (!todoText) return;
@@ -43,6 +45,7 @@ const Todo = () => {
     persist(newTodos);
   };
 
+//changes if the item is checked or not
   const toggleTodo = (id) => {
     const newTodoList = [...todos];
     const todoItem = newTodoList.find((todo) => todo.id === id);
@@ -51,12 +54,14 @@ const Todo = () => {
     persist(newTodoList);
   };
 
+//returns either checked or unchecked todo items
   const getTodos = () => {
     return todos.filter((todo) =>
       filter === "completed" ? todo.checked : !todo.checked
     );
   };
 
+//when clicking on an item, it'll change the item to 'completed' or 'uncompleted'
   const changeFilter = (newFilter) => {
     setFilter(newFilter);
   };

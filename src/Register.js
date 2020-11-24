@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { CredentialsContext } from "./App";
 import { handleErrors } from "./Login";
 
-
+//basically same as login component
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

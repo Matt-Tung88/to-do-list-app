@@ -2,19 +2,12 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
-// const path = require("path");
-
-// const bodyParser = require("body-parser");
 const cors = require("cors");
 
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-
-
 app.use(express.json());
 
-// const ObjectId = require("mongoose").Types.ObjectId;
-
+//creating user and todo schemas
 const userSchema = new mongoose.Schema({
   username: String,
   password: String,
@@ -35,9 +28,11 @@ const todosSchema = new mongoose.Schema({
 });
 const Todos = mongoose.model("Todos", todosSchema);
 
+
+//post for register component
+//verifies the information of username and password with mongodb
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
-  //   const user = new User({username, password});
   const user = await User.findOne({ username }).exec();
   if (user) {
     res.status(500);
@@ -52,6 +47,10 @@ app.post("/register", async (req, res) => {
   });
 });
 
+
+//post for login component
+//verifies the information of username and password with mongodb
+//if new info, itll create a new user
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username }).exec();
@@ -62,14 +61,13 @@ app.post("/login", async (req, res) => {
     });
     return;
   }
-  // await User.create({ username, password });
   res.json({
     message: "success",
   });
 });
 
 
-
+//get user information and create/send items to mongodb
 app.post("/todos", async (req, res) => {
   const { authorization } = req.headers;
   const [, token] = authorization.split(" ");
@@ -96,6 +94,7 @@ app.post("/todos", async (req, res) => {
   res.json(todosItems);
 });
 
+//retrieve the todo items from mongodb
 app.get("/todos", async (req, res) => {
   const { authorization } = req.headers;
   const [, token] = authorization.split(" ");
@@ -112,6 +111,8 @@ app.get("/todos", async (req, res) => {
   res.json(todos);
 });
 
+
+//connecting to mongodb and heroku
 const db = mongoose.connection;
 
 mongoose.connect(process.env.MONGODB_URI, {
@@ -127,7 +128,6 @@ db.once("open", function () {
 });
 
 if (process.env.NODE_ENV === "production") {
-  //   app.use(express.static(path.join(__dirname, "../build")));
   app.use(express.static("client/build"));
 }
 

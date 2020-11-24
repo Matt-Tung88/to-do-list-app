@@ -8,6 +8,8 @@ import Login from "./Login";
 
 export const CredentialsContext = React.createContext();
 
+//make credentials persist throughout the application - useContext
+//routes within the homepage of the application
 function App() {
   const credentialState = useState(null);
   return (
