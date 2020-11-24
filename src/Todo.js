@@ -8,9 +8,10 @@ const Todo = () => {
   const [todoText, setTodoText] = useState("");
   const [credentials] = useContext(CredentialsContext);
   const [filter, setFilter] = useState("uncompleted");
+  
 
   const persist = (newTodos) => {
-    fetch("/todo", {
+    fetch(`/todo`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,11 +22,11 @@ const Todo = () => {
   };
 
   useEffect(() => {
-    fetch("/todo", {
+    fetch(`/todo`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${credentials.username}: ${credentials.password}`,
+        Authorization: `Basic ${credentials.username}:${credentials.password}`,
       },
     })
       .then((res) => res.json())

@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
-const path = require("path");
+// const path = require("path");
 
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -10,19 +10,25 @@ const cors = require("cors");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-// app.use(express.static(path.join(__dirname, "../build")));
 
-// app.get('*', function (req, res) {
-//     res.sendFile(path.join(__dirname, 'build', 'index.html'));
-//   });
-
-// app.get("/", function (req, res) {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
+app.use(express.json());
 
 // const ObjectId = require("mongoose").Types.ObjectId;
 
-app.use(express.json());
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+});
+
+const User = mongoose.model("User", userSchema);
+
+
+const todoSchema = new mongoose.Schema({
+  userId: mongoose.Schema.ObjectId,
+  todos: [{ checked: Boolean, text: String, id: String }],
+});
+
+const Todos = mongoose.model("Todos", todoSchema);
 
 app.post("/reigster", async (req, res) => {
   const { username, password } = req.body;
@@ -35,8 +41,7 @@ app.post("/reigster", async (req, res) => {
   }
   await User.create({ username, password });
   res.json({
-    // username,
-    // password,
+
     message: "success",
   });
 });
@@ -52,18 +57,11 @@ app.post("/login", async (req, res) => {
   }
   await User.create({ username, password });
   res.json({
-    // username,
-    // password,
     message: "success",
   });
 });
 
-const userSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-});
 
-const User = mongoose.model("User", userSchema);
 
 app.post("/todo", async (req, res) => {
   const { authorization } = req.headers;
@@ -89,18 +87,6 @@ app.post("/todo", async (req, res) => {
   res.json(todosItems);
 });
 
-const db = mongoose.connection;
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/todo", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const todoSchema = new mongoose.Schema({
-  userId: mongoose.Schema.ObjectId,
-  todos: [{ checked: Boolean, text: String }],
-});
-
-const Todos = mongoose.model("Todos", todoSchema);
 
 app.get("/todo", async (req, res) => {
   const { authorization } = req.headers;
@@ -115,6 +101,14 @@ app.get("/todo", async (req, res) => {
   const { todos } = await Todos.findOne({ userId: user._id }).exec();
   res.json(todos);
 });
+
+const db = mongoose.connection;
+mongoose.connect( process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+
 
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
