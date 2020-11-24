@@ -2,6 +2,14 @@ import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { CredentialsContext } from "./App";
 
+export const handleErrors = async (response) => {
+  if (!response.ok) {
+    const { message } = await response.json();
+    throw Error(message);
+  }
+  return response.json();
+};
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -10,7 +18,7 @@ const Login = () => {
 
   const login = (e) => {
     e.preventDefault();
-    fetch("https://to-do-list-app-mt.herokuapp.com/login", {
+    fetch(`https://to-do-list-app-mt.herokuapp.com/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,6 +28,7 @@ const Login = () => {
         password,
       }),
     })
+      .then(handleErrors)
       .then(() => {
         setCredentials({
           username,
@@ -29,7 +38,7 @@ const Login = () => {
       })
       .catch((error) => {
         console.log(error);
-        setError("Error");
+        setError(error.message);
       });
   };
   const history = useHistory();
@@ -37,7 +46,7 @@ const Login = () => {
   return (
     <div>
       <h1>Login!</h1>
-      {error}
+      {error && <span style={{ color: "red" }}>{error}</span>}
       <form onSubmit={login}>
         <input
           type="text"

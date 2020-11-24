@@ -4,10 +4,10 @@ const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 // const path = require("path");
 
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const cors = require("cors");
 
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 
@@ -23,39 +23,46 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 
-const todoSchema = new mongoose.Schema({
+const todosSchema = new mongoose.Schema({
   userId: mongoose.Schema.ObjectId,
-  todos: [{ checked: Boolean, text: String, id: String }],
+  todos: [
+    {
+      checked: Boolean,
+      text: String,
+      id: String,
+    },
+  ],
 });
+const Todos = mongoose.model("Todos", todosSchema);
 
-const Todos = mongoose.model("Todos", todoSchema);
-
-app.post("/reigster", async (req, res) => {
+app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   //   const user = new User({username, password});
   const user = await User.findOne({ username }).exec();
   if (user) {
     res.status(500);
-    res.send("user already exists");
+    res.json({
+      message: "user already exists",
+    });
     return;
   }
   await User.create({ username, password });
   res.json({
-
     message: "success",
   });
 });
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  //   const user = new User({username, password});
   const user = await User.findOne({ username }).exec();
   if (!user || user.password !== password) {
     res.status(403);
-    res.send("invalid login");
+    res.json({
+      message: "invalid login",
+    });
     return;
   }
-  await User.create({ username, password });
+  // await User.create({ username, password });
   res.json({
     message: "success",
   });
@@ -63,7 +70,7 @@ app.post("/login", async (req, res) => {
 
 
 
-app.post("/todo", async (req, res) => {
+app.post("/todos", async (req, res) => {
   const { authorization } = req.headers;
   const [, token] = authorization.split(" ");
   const [username, password] = token.split(":");
@@ -71,14 +78,16 @@ app.post("/todo", async (req, res) => {
   const user = await User.findOne({ username }).exec();
   if (!user || user.password !== password) {
     res.status(403);
-    res.send("invalid login");
+    res.json({
+      message: "invalid access",
+    });
     return;
   }
   const todos = await Todos.findOne({ userId: user._id }).exec();
   if (!todos) {
     await Todos.create({
       userId: user._id,
-      todos: [],
+      todos: todosItems,
     });
   } else {
     todos.todos = todosItems;
@@ -87,15 +96,16 @@ app.post("/todo", async (req, res) => {
   res.json(todosItems);
 });
 
-
-app.get("/todo", async (req, res) => {
+app.get("/todos", async (req, res) => {
   const { authorization } = req.headers;
   const [, token] = authorization.split(" ");
   const [username, password] = token.split(":");
   const user = await User.findOne({ username }).exec();
   if (!user || user.password !== password) {
     res.status(403);
-    res.send("invalid login");
+    res.json({
+      message: "invalid access",
+    });
     return;
   }
   const { todos } = await Todos.findOne({ userId: user._id }).exec();
@@ -104,7 +114,7 @@ app.get("/todo", async (req, res) => {
 
 const db = mongoose.connection;
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(`mongodb+srv://mytung:8bj3mSqO3Z3AbOBr@todo-list.wkk3t.mongodb.net/todo?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

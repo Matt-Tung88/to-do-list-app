@@ -11,32 +11,32 @@ const Todo = () => {
   
 
   const persist = (newTodos) => {
-    fetch("https://to-do-list-app-mt.herokuapp.com/todo", {
+    fetch(`https://to-do-list-app-mt.herokuapp.com/todos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${credentials.username}: ${credentials.password}`,
+        Authorization: `Basic ${credentials.username}:${credentials.password}`,
       },
       body: JSON.stringify(newTodos),
-    });
+    }).then(() => {});
   };
 
   useEffect(() => {
-    fetch("https://to-do-list-app-mt.herokuapp.com/todo", {
+    fetch(`https://to-do-list-app-mt.herokuapp.com/todos`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Basic ${credentials.username}:${credentials.password}`,
       },
     })
-      .then((res) => res.json())
+      .then((response) => response.json())
       .then((todos) => setTodos(todos));
   }, []);
 
   const addTodo = (e) => {
     e.preventDefault();
     if (!todoText) return;
-    const newTodo = {id: uuidv4(), checked: false, text: todoText };
+    const newTodo = { id: uuidv4(), checked: false, text: todoText };
     const newTodos = [...todos, newTodo];
     setTodos(newTodos);
     setTodoText("");
