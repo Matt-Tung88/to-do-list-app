@@ -11,7 +11,7 @@ const Todo = () => {
   
 
   const persist = (newTodos) => {
-    fetch(`/todo`, {
+    fetch("https://to-do-list-app-mt.herokuapp.com/todo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +22,7 @@ const Todo = () => {
   };
 
   useEffect(() => {
-    fetch(`/todo`, {
+    fetch("https://to-do-list-app-mt.herokuapp.com/todo", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -10,7 +10,7 @@ const Login = () => {
 
   const login = (e) => {
     e.preventDefault();
-    fetch(`/login`, {
+    fetch("https://to-do-list-app-mt.herokuapp.com/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

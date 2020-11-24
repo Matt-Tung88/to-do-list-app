@@ -10,7 +10,7 @@ const Register = () => {
 
   const register = (e) => {
     e.preventDefault();
-    fetch(`/register`, {
+    fetch("https://to-do-list-app-mt.herokuapp.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
