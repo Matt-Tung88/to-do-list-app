@@ -114,7 +114,7 @@ app.get("/todos", async (req, res) => {
 
 const db = mongoose.connection;
 
-mongoose.connect(`mongodb+srv://mytung:8bj3mSqO3Z3AbOBr@todo-list.wkk3t.mongodb.net/todo?retryWrites=true&w=majority`, {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
